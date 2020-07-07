@@ -1,0 +1,34 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - "5499:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+
+  api:
+    build: ./blind-test_api
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./blind-test_api:/blind-test_api
+      - rails_log:/blind-test_api/log
+    ports:
+      - "3099:3000"
+    depends_on:
+      - db
+
+  front:
+    build: ./blind-test_front
+    ports:
+      - "8099:8080"
+    volumes:
+      - ./blind-test_front:/blind-test_front
+      - front_node_modules:/blind-test_front/node_modules
+
+volumes:
+  db:
+  rails_log:
+  front_node_modules:
