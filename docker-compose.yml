@@ -29,6 +29,8 @@ services:
       - redis
     environment:
       - REDIS_URL=redis://redis:6379/1
+    stdin_open: true
+    tty: true
 
   front:
     build: ./blind-test_front
